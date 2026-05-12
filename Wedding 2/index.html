@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" data-theme="dark">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="دعوة زفاف فاخرة — أحمد وسارة">
+  <title>دعوة زفاف | أحمد &amp; سارة</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@300;400;700&display=swap"
+    rel="stylesheet">
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+
+  <!-- ══════════════════════════════════════
+     BACKGROUND MUSIC
+══════════════════════════════════════ -->
+  <audio id="bg-music" loop preload="none">
+    <source src="assets/music.mp3" type="audio/mpeg">
+  </audio>
+
+  <!-- ══════════════════════════════════════
+     FLOATING CONTROLS
+══════════════════════════════════════ -->
+  <div class="controls-bar" role="toolbar" aria-label="Site Controls">
+    <button id="lang-btn" class="ctrl-btn" title="Toggle Language" aria-label="Toggle Language">EN</button>
+    <button id="theme-btn" class="ctrl-btn" title="Toggle Theme" aria-label="Toggle Theme"></button>
+  </div>
+
+  <button id="music-btn" aria-label="Toggle Music"></button>
+
+  <!-- ══════════════════════════════════════════════════════════
+     LAYER STACK (bottom → top):
+       1. #app           (z: 1)      — wedding content
+       2. #stars-canvas  (z: 9990)   — twinkling stars bg
+       3. .curtain-wrap  (z: 9993)   — velvet curtains
+       4. .curtain-pelmet(z: 9994)   — gold top bar
+       5. #intro-content (z: 9999)   — seal + names on top
+══════════════════════════════════════════════════════════ -->
+
+  <!-- Stars canvas (behind curtains) -->
+  <canvas id="stars-canvas" aria-hidden="true"></canvas>
+
+  <!-- ── Theater Curtains ─────────────────── -->
+
+  <div class="curtain-wrap" id="curtain-wrap" aria-hidden="true">
+    <div class="curtain-left" id="curtain-left"></div>
+    <div class="curtain-right" id="curtain-right"></div>
+  </div>
+
+  <!-- ── Intro Content (seal + names, above curtains) ── -->
+  <div id="intro-content" role="dialog" aria-modal="true" aria-label="Open Invitation">
+
+    <!-- Ambient glow behind seal -->
+    <div class="intro-glow" aria-hidden="true"></div>
+
+    <!-- Couple names teaser -->
+    <p class="intro-names">
+      <span data-i18n="groom_name">أحمد</span>
+      <span class="sep">&amp;</span>
+      <span data-i18n="bride_name">سارة</span>
+    </p>
+
+    <!-- ══ GOLD SOL WAX STAMP ══ -->
+    <button id="seal-btn" class="wax-seal-btn" aria-label="Open Invitation">
+      <div class="seal-body">
+
+        <!-- Sol (Sun) Flame Pattern — SVG engraved into gold -->
+        <svg class="seal-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <defs>
+            <radialGradient id="solGrad" cx="40%" cy="35%" r="65%">
+              <stop offset="0%" stop-color="rgba(255,245,180,0.3)" />
+              <stop offset="100%" stop-color="rgba(60,35,0,0.6)" />
+            </radialGradient>
+            <filter id="innerShadow">
+              <feOffset dx="0" dy="1" />
+              <feGaussianBlur stdDeviation="1" result="offset-blur" />
+              <feComposite operator="out" in="SourceGraphic" in2="offset-blur" result="inverse" />
+              <feFlood flood-color="black" flood-opacity="0.4" result="color" />
+              <feComposite operator="in" in="color" in2="inverse" result="shadow" />
+              <feComposite operator="over" in="shadow" in2="SourceGraphic" />
+            </filter>
+          </defs>
+
+          <!-- Outer decorative rings -->
+          <circle cx="100" cy="100" r="92" fill="none" stroke="rgba(255,235,120,0.2)" stroke-width="1.5" />
+          <circle cx="100" cy="100" r="82" fill="none" stroke="rgba(255,235,120,0.1)" stroke-width="1" />
+
+          <!-- ── Flame Rays (16 rays) ── -->
+          <g fill="rgba(45,25,0,0.6)" filter="url(#innerShadow)">
+            <!-- North -->
+            <path d="M100 70 Q115 50 100 25 Q85 50 100 70" transform="rotate(0 100 100)" />
+            <path d="M100 75 Q108 60 115 45 Q98 65 100 75" transform="rotate(22.5 100 100)" />
+            <!-- North-East -->
+            <path d="M100 70 Q115 50 100 25 Q85 50 100 70" transform="rotate(45 100 100)" />
+            <path d="M100 75 Q108 60 115 45 Q98 65 100 75" transform="rotate(67.5 100 100)" />
+            <!-- East -->
+            <path d="M100 70 Q115 50 100 25 Q85 50 100 70" transform="rotate(90 100 100)" />
+            <path d="M100 75 Q108 60 115 45 Q98 65 100 75" transform="rotate(112.5 100 100)" />
+            <!-- South-East -->
+            <path d="M100 70 Q115 50 100 25 Q85 50 100 70" transform="rotate(135 100 100)" />
+            <path d="M100 75 Q108 60 115 45 Q98 65 100 75" transform="rotate(157.5 100 100)" />
+            <!-- South -->
+            <path d="M100 70 Q115 50 100 25 Q85 50 100 70" transform="rotate(180 100 100)" />
+            <path d="M100 75 Q108 60 115 45 Q98 65 100 75" transform="rotate(202.5 100 100)" />
+            <!-- South-West -->
+            <path d="M100 70 Q115 50 100 25 Q85 50 100 70" transform="rotate(225 100 100)" />
+            <path d="M100 75 Q108 60 115 45 Q98 65 100 75" transform="rotate(247.5 100 100)" />
+            <!-- West -->
+            <path d="M100 70 Q115 50 100 25 Q85 50 100 70" transform="rotate(270 100 100)" />
+            <path d="M100 75 Q108 60 115 45 Q98 65 100 75" transform="rotate(292.5 100 100)" />
+            <!-- North-West -->
+            <path d="M100 70 Q115 50 100 25 Q85 50 100 70" transform="rotate(315 100 100)" />
+            <path d="M100 75 Q108 60 115 45 Q98 65 100 75" transform="rotate(337.5 100 100)" />
+          </g>
+
+          <!-- Sun Core -->
+          <circle cx="100" cy="100" r="35" fill="url(#solGrad)" stroke="rgba(50,30,0,0.5)" stroke-width="1.5" />
+          <circle cx="100" cy="100" r="28" fill="none" stroke="rgba(50,30,0,0.3)" stroke-width="1"
+            stroke-dasharray="2 1" />
+          <circle cx="100" cy="100" r="12" fill="rgba(45,25,0,0.15)" stroke="rgba(45,25,0,0.4)" stroke-width="1" />
+        </svg>
+        </svg>
+
+        <!-- Mirror-polish shine sweep -->
+        <div class="seal-shine"></div>
+        <!-- Decorative rim rings -->
+        <div class="seal-rim"></div>
+        <div class="seal-rim-inner"></div>
+      </div>
+    </button>
+
+    <!-- Hint below seal -->
+    <p class="seal-label" data-i18n="intro_hint">اضغط لفتح الدعوة</p>
+
+  </div><!-- /#intro-content -->
+
+
+  <!-- ══════════════════════════════════════
+     MAIN APP (revealed after curtains open)
+══════════════════════════════════════ -->
+  <main id="app" aria-label="Wedding Invitation">
+
+    <!-- ── SECTION 1: HERO ─────────────────── -->
+    <section id="hero" aria-label="Hero">
+      <div class="hero-particles" aria-hidden="true"></div>
+
+      <div class="hero-content">
+        <p class="hero-monogram reveal" data-i18n="tagline">يوم لا يُنسى</p>
+
+        <div class="gold-divider reveal delay-1" aria-hidden="true">
+          <span class="gold-divider-icon">✦</span>
+        </div>
+
+        <h1 class="hero-names reveal delay-2">
+          <span data-i18n="groom_name">أحمد</span>
+          <span class="amp">&amp;</span>
+          <span data-i18n="bride_name">سارة</span>
+        </h1>
+
+        <div class="gold-divider reveal delay-2" aria-hidden="true">
+          <span class="gold-divider-icon">♡</span>
+        </div>
+
+        <p class="hero-date reveal delay-3" data-i18n="wedding_date_display">١٥ أكتوبر ٢٠٢٦</p>
+      </div>
+
+      <div class="scroll-hint" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
+      </div>
+    </section>
+
+    <!-- ── SECTION 2: COUNTDOWN ────────────── -->
+    <section id="countdown" aria-label="Countdown">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title reveal" data-i18n="countdown_title">العد التنازلي للزفاف</h2>
+          <div class="gold-divider reveal delay-1" aria-hidden="true">
+            <span class="gold-divider-icon">✦</span>
+          </div>
+        </div>
+
+        <div class="countdown-grid" role="timer" aria-live="polite" aria-atomic="true">
+          <div class="cd-item reveal delay-1">
+            <span class="cd-number" id="cd-days">00</span>
+            <span class="cd-label" data-i18n="days">يوم</span>
+          </div>
+          <div class="cd-item reveal delay-2">
+            <span class="cd-number" id="cd-hours">00</span>
+            <span class="cd-label" data-i18n="hours">ساعة</span>
+          </div>
+          <div class="cd-item reveal delay-3">
+            <span class="cd-number" id="cd-minutes">00</span>
+            <span class="cd-label" data-i18n="minutes">دقيقة</span>
+          </div>
+          <div class="cd-item reveal delay-4">
+            <span class="cd-number" id="cd-seconds">00</span>
+            <span class="cd-label" data-i18n="seconds">ثانية</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SECTION 3: WEDDING DETAILS ──────── -->
+    <section id="details" aria-label="Wedding Details" style="margin :50px">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title reveal" data-i18n="details_title">تفاصيل الحفل</h2>
+          <p class="section-subtitle reveal delay-1" data-i18n="details_subtitle">نسعد بحضوركم الكريم</p>
+          <div class="gold-divider reveal delay-2" aria-hidden="true">
+            <span class="gold-divider-icon">✦</span>
+          </div>
+        </div>
+
+        <div class="details-cards">
+
+          <article class="detail-card glass-card reveal delay-1">
+            <div class="detail-icon" aria-hidden="true">📅</div>
+            <h3 data-i18n="date_label">التاريخ</h3>
+            <p data-i18n="date_value">الخميس، ١٥ أكتوبر ٢٠٢٦</p>
+          </article>
+
+          <article class="detail-card glass-card reveal delay-2">
+            <div class="detail-icon" aria-hidden="true">🕗</div>
+            <h3 data-i18n="time_label">الموعد</h3>
+            <p data-i18n="time_value">٨:٠٠ مساءً</p>
+          </article>
+
+          <article class="detail-card glass-card reveal delay-3">
+            <div class="detail-icon" aria-hidden="true">🏛️</div>
+            <h3 data-i18n="hall_label">القاعة</h3>
+            <p data-i18n="hall_value">قاعة الملكات</p>
+          </article>
+
+          <article class="detail-card glass-card reveal delay-4">
+            <div class="detail-icon" aria-hidden="true">📍</div>
+            <h3 data-i18n="location_label">المكان</h3>
+            <p data-i18n="location_value">فندق ريتز كارلتون، القاهرة</p>
+            <!-- ↓ Replace href with your Google Maps link -->
+            <a href="https://maps.google.com/?q=Ritz+Carlton+Cairo" target="_blank" rel="noopener noreferrer"
+              class="btn">
+              <span data-i18n="map_button">عرض على الخريطة</span>
+              <svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" />
+                <polyline points="15 3 21 3 21 9" />
+                <line x1="10" y1="14" x2="21" y2="3" />
+              </svg>
+            </a>
+          </article>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ── SECTION 4: MESSAGE ───────────────── -->
+    <section id="message" aria-label="Message from the Couple" style="padding:25px">
+      <div class="container">
+        <div class="section-header">
+          <h2 class="section-title reveal" data-i18n="message_title">كلمة من القلب</h2>
+          <div class="gold-divider reveal delay-1" aria-hidden="true">
+            <span class="gold-divider-icon">♡</span>
+          </div>
+        </div>
+
+        <div class="message-card glass-card reveal delay-2">
+          <span class="quote-mark" aria-hidden="true">"</span>
+          <p class="message-text" data-i18n="message_content">
+            بكل الحب والسعادة، نتشرف بدعوتكم لمشاركتنا فرحة أجمل لحظات حياتنا.
+          </p>
+          <div class="gold-divider reveal delay-3" style="margin-top:2rem;" aria-hidden="true">
+            <span class="gold-divider-icon">✦</span>
+          </div>
+          <p class="message-sig" data-i18n="footer_text">بكل حب، أحمد وسارة</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── FOOTER ───────────────────────────── -->
+    <footer role="contentinfo">
+      <p class="footer-text" data-i18n="footer_text">بكل حب، أحمد وسارة</p>
+      <span class="footer-hearts" aria-hidden="true">♡ ✦ ♡</span>
+    </footer>
+
+  </main>
+
+  <!-- ══════════════════════════════════════
+     SCRIPTS (order matters)
+══════════════════════════════════════ -->
+  <script src="js/locales.js"></script> <!-- embedded translations first -->
+  <script src="js/theme.js"></script>
+  <script src="js/language.js"></script>
+  <script src="js/countdown.js"></script>
+  <script src="js/particles.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+
+</html>
